@@ -1,0 +1,8 @@
+project: valar
+function: docs
+environment:
+  name: static
+ignore:
+- .valar.yml
+- .git
+- node_modules
