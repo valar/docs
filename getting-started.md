@@ -1,5 +1,6 @@
 # Getting Started
 
+
 At this point, we assume you have got access to the Valar Cloud by registering for the invitation list.
 If you have not done that already, you should head back to [our website](https://valar.dev) and do that first.
 
@@ -27,11 +28,13 @@ package main
 
 import (
     "fmt"
+    "log"
     "net/http"
 )
 
 func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        log.Println(r.Method, r.URL.Path)
         fmt.Fprintf(w, "Hello, you've requested: %s\n", r.URL.Path)
     })
 
@@ -95,6 +98,13 @@ README.md
 babel.config.js
 package-lock.json
 ...
+```
+
+Similar to the logs, you can also follow the logs of the running service instance.
+```
+$ valar logs --follow
+2020/02/16 20:25:06 GET /
+2020/02/16 20:25:11 GET /hello
 ```
 
 **Congratulations, you learned the basics of deploying a service to Valar.**
