@@ -4,6 +4,15 @@
 
 The `golang` constructor executes a static binary build. It only supports Alpine Linux environments. It always builds from the top-level directory submitted to Valar.
 
-## Future plans
+## Including assets
+Assets can be included using an extra file called `.valar.assets`. This file should list all files and directories that are needed in the runtime environment.
+A possible file may look like
 
-- assets that should be stored in the same folder as the service executable are user-defined using the environment variable `ASSETS`
+```bash
+$ cat .valar.assets
+templates
+assets
+```
+
+## Future plans
+- defining runtime environment variables should be possible using a `.valar.env` file
