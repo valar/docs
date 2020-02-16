@@ -807,3 +807,6 @@ pre:after {
   text-align: right;
   top: 0;
 }
+.app-name-link img {
+    height: 1.5rem;
+}
