@@ -1,4 +1,3 @@
-* [Home](/)
 * [Getting started](getting-started/index.md)
     * [Logical model](getting-started/logical-model.md)
     * [Setting up the project](getting-started/project-setup.md)
