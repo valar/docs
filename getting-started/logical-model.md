@@ -2,16 +2,18 @@
 
 Valar has a very simple logical model.
 
-There are **users**, **projects**, **services** and **tasks**.
+There are **users**, **projects**, **services**, **builds** and **deployments**.
 
 A **user** may be the creator of one or more **projects**.
 
-A **user** may be authorized to *read*, *write* or *invoke* a project.
+A **user** may be authorized to *read* (read builds, deployments, ...), *write* (submit new builds, deployments, ...), *invoke* (reach service via HTTP) and *manage* (transfer ownership, assign permissions, ...) a project.
 
 **Projects** are the level on which authorization happens.
 A project may contain one or more **services**.
 
 A **service** has (almost always) a latest version.
-New versions of a service are deployed by a **task**.
+A version of a service is defined by a **deployment**.
 
-**Tasks** are created by pushing new code to the API server.
+**Builds** are created by pushing new code to the API server.
+Pushing new code is self-deploying action by default and
+creates a new **deployment** after the **build** has finished.

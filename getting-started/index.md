@@ -1,9 +1,9 @@
 # Getting started
 
-At this point, we assume you have got access to the Valar Cloud by registering for the invitation list.
+At this point, we assume you have got access to Valar by registering for the invitation list.
 If you have not done that already, you should head back to [our website](https://valar.dev) and do that first.
 
-After registering, you will have received an access token for the Valar Cloud. Please keep this token secure as it
+After registering, you will have received an access token for the Valar. Please keep this token secure as it
 identifies you uniquely. Any person or program that has access to your token identifies as yourself.
 
 
