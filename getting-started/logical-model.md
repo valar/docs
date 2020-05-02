@@ -6,7 +6,11 @@ There are **users**, **projects**, **services**, **builds** and **deployments**.
 
 A **user** may be the creator of one or more **projects**.
 
-A **user** may be authorized to *read* (read builds, deployments, ...), *write* (submit new builds, deployments, ...), *invoke* (reach service via HTTP) and *manage* (transfer ownership, assign permissions, ...) a project.
+A **user** may be authorized to
+- read (read builds, deployments)
+- write (submit new builds, deployments)
+- invoke (reach service via HTTP)
+- manage (transfer ownership, assign permissions)
 
 **Projects** are the level on which authorization happens.
 A project may contain one or more **services**.
