@@ -1,7 +1,6 @@
 project: valar
-function: docs
-environment:
-  name: static
+service: docs
+constructor: static
 ignore:
 - .valar.yml
 - .git
