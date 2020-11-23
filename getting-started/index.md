@@ -9,11 +9,11 @@ identifies you uniquely. Any person or program that has access to your token ide
 
 ## Installing the CLI
 
-To get started with deploying your first service, you have to install the Valar command line tool. You can either use the
-install script served from our website or build it yourself by pulling [the source from GitHub](https://github.com/valar/cli).
+To get started with deploying your first service, you have to install the Valar command line tool. The simplest way to get started is to use `homebrew`.
 
 ```bash
-$ curl -sSL https://cli.valar.dev | bash -
+$ brew tap valar/tap
+$ brew install valar
 ```
 
 You will be asked to enter your password (because we install the binary to `/usr/local/bin`) and your API token.

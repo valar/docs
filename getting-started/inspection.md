@@ -13,22 +13,26 @@ Owner:        admin
 
 You can also stream the build logs directly to your local machine using a single command.
 ```bash
-$ valar builds logs --follow 31e28c4d
+$ valar builds logs -f
 - Allocating compute resources ...
 - Fetching source archive ...
 - Executing constructor ...
 + set -e
 + mkdir -p /src
 + mkdir -p /out
-+ tar -xzf /src.tar.gz -C /src
-+ cd /src
-+ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags '-w -extldflags "-static"' -o /out/function
 ...
+```
+
+You can also watch your deployment become live.
+```
+$ valar deployments
+Version Status Created    Build
+1       done   1 hour ago 0a7c96c9-cc72-44b1-9720-3d82492b1356
 ```
 
 Similar to the logs, you can also follow the logs of the running service instance.
 ```
-$ valar logs --follow
+$ valar logs -f
 2020/02/16 20:25:06 GET /
 2020/02/16 20:25:11 GET /hello
 ```
