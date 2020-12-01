@@ -13,6 +13,3 @@ $ cat .valar.assets
 templates
 assets
 ```
-
-## Future plans
-- defining runtime environment variables should be possible using a `.valar.env` file
