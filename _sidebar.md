@@ -10,3 +10,4 @@
     * [node](constructors/node.md)
     * [node-static](constructors/node-static.md)
     * [static](constructors/static.md)
+    * [vapor](constructors/vapor.md)
