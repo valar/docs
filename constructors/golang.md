@@ -1,6 +1,6 @@
 # Constructor `golang`
 
-> Aliases are `go`, `golang`, `golang-1.13`.
+> Aliases are `go`, `golang`, `golang-1.16`.
 
 The `golang` constructor executes a static binary build. It only supports Alpine Linux environments. It always builds from the top-level directory submitted to Valar.
 

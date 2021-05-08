@@ -12,7 +12,7 @@ This build ID uniquely identifies the submitted source configuration. If you wan
 ```bash
 $ valar builds
 ID                                   Status Created
-a725978e-01ba-4c39-87c8-d85d600e503f live   2 days ago
-7f38d70b-a509-4c27-b122-3f94e3f21f4d live   8 hours ago
-31e28c4d-6a7b-47ff-bd42-31b416cab855 live   1 hour ago
+a725978e-01ba-4c39-87c8-d85d600e503f done   2 days ago
+7f38d70b-a509-4c27-b122-3f94e3f21f4d done   8 hours ago
+31e28c4d-6a7b-47ff-bd42-31b416cab855 done   1 hour ago
 ```

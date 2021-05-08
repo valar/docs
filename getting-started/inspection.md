@@ -25,7 +25,7 @@ $ valar builds logs -f
 
 You can also watch your deployment become live.
 ```
-$ valar deployments
+$ valar deploys
 Version Status Created    Build
 1       done   1 hour ago 0a7c96c9-cc72-44b1-9720-3d82492b1356
 ```
