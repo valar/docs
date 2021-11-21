@@ -1,7 +1,12 @@
 project: valar
 service: docs
-constructor: static
-ignore:
-- .valar.yml
-- .git
-- node_modules
+build:
+    constructor: static
+    ignore:
+        - .valar.yml
+        - .git
+        - node_modules
+    environment: []
+deployment:
+    skip: false
+    environment: []
