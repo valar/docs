@@ -3,6 +3,7 @@
     * [Setting up the project](getting-started/project-setup.md)
     * [Publishing the service](getting-started/publish.md)
     * [Inspecting the logs](getting-started/inspection.md)
+    * [Using custom domains](getting-started/custom-domains.md)
 * [Constructors](constructors/index.md)
     * [golang](constructors/golang.md)
     * [java](constructors/java.md)
