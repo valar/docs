@@ -23,20 +23,11 @@ $ valar builds logs -f
 ...
 ```
 
-You can also watch your deployment become live.
-```
-$ valar deploys
-Version Status Created    Build
-1       done   1 hour ago 0a7c96c9-cc72-44b1-9720-3d82492b1356
-```
-
 Similar to the logs, you can also follow the logs of the running service instance.
 ```
 $ valar logs -f
 2020/02/16 20:25:06 GET /
 2020/02/16 20:25:11 GET /hello
 ```
-
-The default domain allocated for a service is `[project]-[service].valar.dev`. But be careful, this may change in the future.
 
 **Congratulations, you learned the basics of deploying a service to Valar.**

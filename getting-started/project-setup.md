@@ -28,10 +28,10 @@ Create a file called `main.go` and paste the contents into it. If you happen to 
 
 ## Configuring our service
 
-Every user is allocated one project by default. The project name is the nickname of the user. So if your nickname happens to be `markus`, your default project will be called `markus`. To tell Valar about our little Go web app, we have to run an initialization command.
+To tell Valar about our little Go web app, we have to run an initialization command.
 
 ```bash
-$ valar init --type=go --project=markus helloworld
+$ valar init --type go helloworld
 ```
 
 > **Important**: While nicknames may contain dashes, services are not allowed.
