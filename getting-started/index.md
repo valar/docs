@@ -22,8 +22,17 @@ $ brew install valar
 
 Congratulations, you've installed Valar. Now we just need to configure your CLI to use the API token obtained beforehand.
 
+## Configuring access
+
+The Valar CLI separates global configuration into **context** and **endpoints**. You can easily switch between contexts, for example when you manage multiple projects.
+
 ```bash
-valar config --api-endpoint https://api.valar.dev/v2 --api-token [YOUR API TOKEN HERE]
+# Create a new endpoint
+valar config endpoint set valar --url https://api.valar.dev/v2 --token [YOUR API TOKEN HERE]
+# Create a new context
+valar config context set [YOUR USERNAME] --endpoint valar --project [YOUR USERNAME]
+# Use the newly created context
+valar config context use [YOUR USERNAME]
 ```
 
 If all goes well, you will be now able to deploy your first service.
