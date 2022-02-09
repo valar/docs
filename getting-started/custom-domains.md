@@ -13,7 +13,7 @@ To add a new domain to the current project, you need to use a subcommand of `val
 $ valar domains add mydomain.com
 Please set the following records (choose one for A/AAAA and CNAME):
 
-CNAME valar.app
+CNAME mydomain.com
 A     94.130.169.221
 AAAA  2a01:4f8:c0c:cc7b::1
 TXT   edXV6/46gsofA19JNCRZRRCofdysr+FAqthoRsrwavu+OtYyyniUStL7mka8XtcqjqMstA5PJ+5CHky/1guASw==
