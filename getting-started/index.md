@@ -1,7 +1,6 @@
 # Getting started
 
-At this point, we assume you have got access to Valar by registering for the invitation list.
-If you have not done that already, you should head back to [our website](https://valar.dev) and do that first.
+At this point, we assume you have got access to Valar. If you don't, you won't be able to continue from here. As Valar is invitation-only right now, access can only be obtained by being invited by another user.
 
 ## Obtaining an API token
 
