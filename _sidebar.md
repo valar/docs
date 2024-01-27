@@ -4,6 +4,7 @@
     * [Publishing the service](getting-started/publish.md)
     * [Inspecting the logs](getting-started/inspection.md)
     * [Using custom domains](getting-started/custom-domains.md)
+    * [Managing permissions](getting-started/managing-permissions.md)
 * [Constructors](constructors/index.md)
     * [docker](constructors/docker.md)
     * [golang](constructors/golang.md)

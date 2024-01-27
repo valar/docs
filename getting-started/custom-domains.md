@@ -1,6 +1,6 @@
 # Adding custom domains
 
-Being reachable under some `*.invoke.valar.dev` domain is nice and all,
+Being reachable under some `myproject-myapp.valar.app` domain is nice and all,
 but sometimes you want to do stuff without having the valar domain branding in the way. To help you with that, we provide support for custom domains.
 
 To get started, choose a domain you have full control over. To verify ownership, you have to set specific DNS records for the domain.
