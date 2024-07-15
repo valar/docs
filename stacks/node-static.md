@@ -1,4 +1,4 @@
-# Constructor `node-static`
+# node-static
 
 The `node-static` constructor performs a typical static website build using `npm` or `yarn`.
 You may choose between `yarn` or `npm` by setting the `PACKAGE_MANAGER` environment variable respectively.
