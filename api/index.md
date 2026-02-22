@@ -13,7 +13,7 @@ $ curl https://api.valar.dev/v2/users/info \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-You can generate a token via `valar auth login`. See [Setting up the client](getting-started/cli-setup.md) for details.
+You can create a token in [the cloud console](https://console.valar.dev) under 'API Tokens'. See [Setting up the client](getting-started/cli-setup.md) for details.
 
 ## Errors
 

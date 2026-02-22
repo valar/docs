@@ -6,7 +6,7 @@ Before submitting a build, you need to upload your source code as a build artifa
 
 `POST /v2/projects/{project}/services/{service}/artifacts`
 
-Uploads a binary artifact (typically a tarball of your source code) and returns an artifact key. The CLI handles this automatically when you run `valar publish`, but you can also upload artifacts directly.
+Uploads a binary artifact (typically a tarball of your source code) and returns an artifact key. The CLI handles this automatically when you run `valar builds push`, but you can also upload artifacts directly.
 
 ```bash
 $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/artifacts \
