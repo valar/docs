@@ -8,6 +8,7 @@
     * [Custom domains](advanced-topics/custom-domains.md)
     * [Permission management](advanced-topics/managing-permissions.md)
     * [Scheduled invocations](advanced-topics/managing-schedules.md)
+    * [Deploying from GitHub Actions](advanced-topics/github-actions.md)
 * [Stacks](stacks/index.md)
     * [docker](stacks/docker.md)
     * [golang](stacks/golang.md)
