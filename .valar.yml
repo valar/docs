@@ -1,11 +1,13 @@
 project: valar
 service: docs
 build:
-    constructor: static
+    constructor: node-static
     ignore:
         - .valar.yml
         - .git
         - node_modules
+        - dist
+        - dist-server
     environment: []
 deployment:
     skip: false
