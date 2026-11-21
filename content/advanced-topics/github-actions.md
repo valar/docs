@@ -5,7 +5,13 @@ The [Valar action](https://github.com/valar/action) builds and deploys a service
 ## Setting it up
 
 1. Make sure the repository has a `.valar.yml`, as described in [Creating a new service](../getting-started/service-setup.md).
-2. Create an API token in the [console](https://console.valar.dev) and add it to the repository as a secret named `VALAR_TOKEN` (*Settings → Secrets and variables → Actions*).
+2. Create an API token that can only read and deploy in this project, and add it to the repository as a secret named `VALAR_TOKEN` (*Settings → Secrets and variables → Actions*). In the [console](https://console.valar.dev), pick the project and the `read` and `deploy` scopes; with the CLI, run:
+
+   ```sh
+   valar token create --project <project> --scopes read,deploy github-deploy
+   ```
+
+   The token expires after 90 days unless you choose another lifetime (`--ttl`, up to 365 days). The job log warns from 14 days before it expires.
 3. Add the workflow below as `.github/workflows/valar.yml`.
 
 ```yaml
