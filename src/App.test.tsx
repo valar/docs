@@ -36,7 +36,7 @@ describe("App", () => {
   it("links to the previous and next page", async () => {
     renderAt("/stacks");
     const pager = screen.getByRole("navigation", { name: "Previous and next page" });
-    expect(within(pager).getByRole("link", { name: /Previous/ })).toHaveAttribute("href", "/advanced-topics/managing-schedules");
+    expect(within(pager).getByRole("link", { name: /Previous/ })).toHaveAttribute("href", "/advanced-topics/github-actions");
     expect(within(pager).getByRole("link", { name: /Next/ })).toHaveAttribute("href", "/stacks/docker");
   });
 
