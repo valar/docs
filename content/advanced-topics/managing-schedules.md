@@ -17,6 +17,8 @@ $ valar cron set everyDay "0 0 * * *" --payload do-something
 
 The schedule above will trigger an invocation of the `helloworld` service by sending a `POST /` HTTP request every 10 minutes.
 
+Timespecs are evaluated in UTC: `0 12 * * *` fires at 12:00 UTC. A new schedule first fires at its next matching time, not when you create it.
+
 ### Adjusting the timespec
 
 In case you're not satisfied with your invocation schedule, you may adjust the timespec using a variant of the set command. If a schedule has already been specified, all arguments except for the schedule name are considered *optional*.
