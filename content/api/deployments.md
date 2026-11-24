@@ -1,6 +1,14 @@
 # Deployments
 
-A deployment takes a completed [build](api/builds.md) and makes it live. Each deployment increments the service version. Builds are deployed automatically unless you opt out, but you can also deploy or rollback manually.
+A deployment makes a completed [build](api/builds.md) live and increments the service version. Builds deploy automatically unless you skip deployment; you can also deploy or roll back manually.
+
+## Endpoints
+
+| Method | Path | Action |
+|---|---|---|
+| `GET` | `/v2/projects/{project}/services/{service}/deploys` | [List deployments](#list-deployments) |
+| `POST` | `/v2/projects/{project}/services/{service}/deploys` | [Create a deployment](#create-a-deployment) |
+| `POST` | `/v2/projects/{project}/services/{service}/deploys/rollback` | [Rollback a deployment](#rollback-a-deployment) |
 
 ## List deployments
 
@@ -9,7 +17,7 @@ A deployment takes a completed [build](api/builds.md) and makes it live. Each de
 Returns all deployments for a service.
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/deploys \
+curl https://api.valar.dev/v2/projects/myproject/services/web/deploys \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -29,10 +37,13 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web/deploys \
 
 `POST /v2/projects/{project}/services/{service}/deploys`
 
-Deploys a specific build. Use this when you submitted a build with `deployment.skip` set to `true` and want to deploy it later, or to redeploy an earlier build.
+Deploys a specific build. Use this to deploy a build submitted with `deployment.skip` set to `true`, or to redeploy an earlier build.
+
+- `build`: Required. ID of the build to deploy.
+- `environment`: Optional. Array of `{key, value}` objects. Include `secret: true` for values encrypted through [Environment](api/environment.md).
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/deploys \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/deploys \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -53,16 +64,14 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/deploys 
 }
 ```
 
-The `environment` array is optional. Each entry has a `key` and `value`, and optionally `secret: true` for encrypted values (see [Environment](api/environment.md)).
-
 ## Rollback a deployment
 
 `POST /v2/projects/{project}/services/{service}/deploys/rollback`
 
-Rolls back to a previous deployment by version number. This creates a new deployment that uses the same build as the specified version.
+Creates a new deployment using the build from an earlier version.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/deploys/rollback \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/deploys/rollback \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"version": 11}'
@@ -78,4 +87,5 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/deploys/
 }
 ```
 
-> **Important**: Rollback creates a *new* deployment version — it does not revert the version counter. The `version` field in the request body refers to the version you want to roll back *to*.
+> [!IMPORTANT]
+> Rollback creates a new deployment version and does not revert the version counter. Pass the target version you want to roll back to in the `version` field.

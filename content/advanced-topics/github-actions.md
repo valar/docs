@@ -4,10 +4,10 @@ The [Valar action](https://github.com/valar/action) builds and deploys a service
 
 ## Setting it up
 
-1. Make sure the repository has a `.valar.yml`, as described in [Creating a new service](../getting-started/service-setup.md).
-2. Create an API token that can only read and deploy in this project, and add it to the repository as a secret named `VALAR_TOKEN` (*Settings → Secrets and variables → Actions*). In the [console](https://console.valar.dev), pick the project and the `read` and `deploy` scopes; with the CLI, run:
+1. Make sure the repository has a `.valar.yml`, as described in [Creating a new service](getting-started/service-setup.md).
+2. Create an API token that can only read and deploy in this project, and add it to the repository as a secret named `VALAR_TOKEN` (*Settings > Secrets and variables > Actions*). In the [console](https://console.valar.dev), pick the project and the `read` and `deploy` scopes; with the CLI, run:
 
-   ```sh
+   ```bash
    valar token create --project <project> --scopes read,deploy github-deploy
    ```
 
@@ -45,7 +45,7 @@ Every push to `main` now builds and deploys the service. The build log appears i
 
 ## Inputs and outputs
 
-| Input | Default | |
+| Input | Default | Description |
 |---|---|---|
 | `token` | | API token, from a secret. |
 | `endpoint` | `https://api.valar.dev/v2` | API of a self-hosted Valar installation. |

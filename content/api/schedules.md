@@ -1,15 +1,25 @@
 # Schedules
 
-Schedules let you trigger your service automatically on a cron-based timer. Each schedule sends an HTTP request to a path on your service at the specified interval. See [Scheduled invocations](advanced-topics/managing-schedules.md) for a walkthrough using the CLI.
+Schedules send HTTP `POST` requests to a path on your service using a UTC cron schedule. A new schedule first fires at its next matching time. See [Scheduled invocations](advanced-topics/managing-schedules.md) for the CLI commands.
+
+## Endpoints
+
+| Method | Path | Action |
+|---|---|---|
+| `GET` | `/v2/projects/{project}/services/{service}/schedules` | [List schedules](#list-schedules) |
+| `POST` | `/v2/projects/{project}/services/{service}/schedules` | [Create or update a schedule](#create-or-update-a-schedule) |
+| `GET` | `/v2/projects/{project}/services/{service}/schedules/{schedule}` | [Get schedule details](#get-schedule-details) |
+| `DELETE` | `/v2/projects/{project}/services/{service}/schedules/{schedule}` | [Delete a schedule](#delete-a-schedule) |
+| `POST` | `/v2/projects/{project}/services/{service}/schedules/{schedule}/trigger` | [Trigger a schedule manually](#trigger-a-schedule-manually) |
 
 ## List schedules
 
 `GET /v2/projects/{project}/services/{service}/schedules`
 
-Returns all schedules configured for a service.
+Returns all schedules for a service.
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/schedules \
+curl https://api.valar.dev/v2/projects/myproject/services/web/schedules \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -31,10 +41,18 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web/schedules \
 
 `POST /v2/projects/{project}/services/{service}/schedules`
 
-Creates a new schedule or updates an existing one (matched by `name`). The `timespec` is a standard cron expression.
+Creates a schedule or updates an existing one matched by `name`. When updating an existing schedule, only `name` is required; omitted fields keep their current values.
+
+| Field | Description |
+|---|---|
+| `name` | Schedule name. Required for both creation and updates. |
+| `timespec` | Standard cron expression evaluated in UTC. |
+| `path` | Request path on your service (for example, `/`). |
+| `payload` | Body sent with the HTTP `POST` request. |
+| `status` | `enabled` or `disabled`. Set to `disabled` to pause a schedule without deleting it. |
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedules \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedules \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -51,12 +69,10 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedule
 }
 ```
 
-When updating an existing schedule, only the `name` field is required — all other fields are optional and will keep their current values if omitted.
-
-To disable a schedule without deleting it, set `status` to `disabled`:
+Disable a schedule without deleting it:
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedules \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedules \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name": "every10", "status": "disabled"}'
@@ -66,10 +82,10 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedule
 
 `GET /v2/projects/{project}/services/{service}/schedules/{schedule}`
 
-Returns detailed information about a schedule, including the result of its most recent invocation.
+Returns a schedule and the result of its most recent invocation.
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/schedules/every10 \
+curl https://api.valar.dev/v2/projects/myproject/services/web/schedules/every10 \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -94,16 +110,16 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web/schedules/every1
 }
 ```
 
-The `invocation` field is `null` if the schedule has never been triggered.
+Before the first run, `invocation` is `null`.
 
 ## Delete a schedule
 
 `DELETE /v2/projects/{project}/services/{service}/schedules/{schedule}`
 
-Permanently removes a schedule and its invocation history.
+Permanently deletes a schedule and its invocation history.
 
 ```bash
-$ curl -X DELETE https://api.valar.dev/v2/projects/myproject/services/web/schedules/every10 \
+curl -X DELETE https://api.valar.dev/v2/projects/myproject/services/web/schedules/every10 \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -117,10 +133,10 @@ $ curl -X DELETE https://api.valar.dev/v2/projects/myproject/services/web/schedu
 
 `POST /v2/projects/{project}/services/{service}/schedules/{schedule}/trigger`
 
-Fires a schedule immediately, regardless of its timespec. Useful for testing.
+Fires a schedule immediately, ignoring its `timespec`.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedules/every10/trigger \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/schedules/every10/trigger \
   -H "Authorization: Bearer $TOKEN"
 ```
 

@@ -1,19 +1,33 @@
 # Inspecting the logs
 
-To inspect a specific build, including build logs and more, you can use `valar builds inspect`.
+Use the Valar CLI to check build metadata, follow build output, and stream logs from your running service.
+
+## Inspecting a build
+
+Inspect a build by its full ID or a unique prefix:
+
 ```bash
-$ valar builds inspect 31e28c4d
+valar build inspect 31e28c4d
+```
+
+```text
 ID:           31e28c4d-6a7b-47ff-bd42-31b416cab855
 Constructor:  golang
 CreatedAt:    2020-10-24 23:20:23.628454 +0000 UTC
 Status:       done
 Flags:        none
-Owner:        admin
+Owner:        myuser
 ```
 
-You can also stream the build logs directly to your local machine using a single command.
+## Streaming build logs
+
+Follow the log output of the latest build:
+
 ```bash
-$ valar builds logs -f
+valar build logs -f
+```
+
+```text
 - Allocating compute resources ...
 - Fetching source archive ...
 - Executing constructor ...
@@ -23,11 +37,17 @@ $ valar builds logs -f
 ...
 ```
 
-Similar to the logs, you can also follow the logs of the running service instance.
-```
-$ valar logs -f
-2020/02/16 20:25:06 GET /
-2020/02/16 20:25:11 GET /hello
+## Streaming service logs
+
+Follow runtime logs from the deployed service:
+
+```bash
+valar logs -f
 ```
 
-**Congratulations, you learned the basics of deploying a service to Valar.**
+```text
+2020/10/24 23:21:06 GET /
+2020/10/24 23:21:11 GET /hello-world
+```
+
+To fetch build or service logs over HTTP, see [Builds](api/builds.md) and [Services](api/services.md) in the API reference.

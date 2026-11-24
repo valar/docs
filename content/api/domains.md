@@ -1,15 +1,26 @@
 # Domains
 
-Custom domains let you serve a Valar service from your own domain name instead of the default `*.valar.app` address. The workflow is: add a domain, configure DNS records, verify ownership, then link the domain to a service. See [Custom domains](advanced-topics/custom-domains.md) for a step-by-step walkthrough using the CLI.
+Serve a service on your own domain name instead of `*.valar.app`. Add a domain, set its DNS records, verify ownership, and link it to a service. See [Custom domains](advanced-topics/custom-domains.md) for the CLI commands.
+
+## Endpoints
+
+| Method | Path | Action |
+|---|---|---|
+| `GET` | `/v2/projects/{project}/domains` | [List domains](#list-domains) |
+| `POST` | `/v2/projects/{project}/domains` | [Add a domain](#add-a-domain) |
+| `POST` | `/v2/projects/{project}/domains/{domain}/verify` | [Verify a domain](#verify-a-domain) |
+| `POST` | `/v2/projects/{project}/domains/{domain}/link` | [Link a domain to a service](#link-a-domain-to-a-service) |
+| `DELETE` | `/v2/projects/{project}/domains/{domain}/link` | [Unlink a domain from a service](#unlink-a-domain-from-a-service) |
+| `DELETE` | `/v2/projects/{project}/domains/{domain}` | [Remove a domain](#remove-a-domain) |
 
 ## List domains
 
 `GET /v2/projects/{project}/domains`
 
-Returns all domains registered to a project, including their verification status and linked service.
+Returns all domains registered to a project, with their verification status and linked service.
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/domains \
+curl https://api.valar.dev/v2/projects/myproject/domains \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -32,10 +43,10 @@ $ curl https://api.valar.dev/v2/projects/myproject/domains \
 
 `POST /v2/projects/{project}/domains`
 
-Registers a new domain with the project. The response contains the DNS records you need to configure with your DNS provider before verification.
+Registers a domain with the project and returns the DNS records to configure before verification.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/domains \
+curl -X POST https://api.valar.dev/v2/projects/myproject/domains \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"domain": "mydomain.com"}'
@@ -50,16 +61,21 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/domains \
 }
 ```
 
-For apex domains (e.g. `mydomain.com`), set the A, AAAA, and TXT records. For subdomains (e.g. `app.mydomain.com`), set the CNAME and TXT records.
+Set the returned records with your DNS provider:
+
+| Domain type | Example | DNS records |
+|---|---|---|
+| Apex domain | `mydomain.com` | `A`, `AAAA`, `TXT` |
+| Subdomain | `app.mydomain.com` | `CNAME`, `TXT` |
 
 ## Verify a domain
 
 `POST /v2/projects/{project}/domains/{domain}/verify`
 
-Triggers a DNS verification check. Call this after you have configured the DNS records returned by the add endpoint.
+Verifies domain ownership after you set the DNS records from the add step.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/verify \
+curl -X POST https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/verify \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -76,16 +92,19 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/
 }
 ```
 
-If verification fails, the `verified` field will be `false` and `error` will describe the problem.
+If verification fails, `verified` is `false` and `error` describes the problem.
 
 ## Link a domain to a service
 
 `POST /v2/projects/{project}/domains/{domain}/link`
 
-Points a verified domain at a service within the same project. Set `allowInsecureTraffic` to `true` if you want the domain to accept plain HTTP in addition to HTTPS.
+Points a verified domain at a service in the same project.
+
+- `service`: Required. Name of the target service.
+- `allowInsecureTraffic`: Optional. Set to `true` to accept both HTTP and HTTPS.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/link \
+curl -X POST https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/link \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"service": "web"}'
@@ -97,16 +116,17 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/
 }
 ```
 
-> **Important**: The domain must be verified before it can be linked. The service must belong to the same project as the domain.
+> [!IMPORTANT]
+> The domain must be verified before you can link it, and the service must belong to the same project.
 
 ## Unlink a domain from a service
 
 `DELETE /v2/projects/{project}/domains/{domain}/link`
 
-Removes the link between a domain and a service. The domain stays registered in the project and can be re-linked later.
+Removes the link between a domain and a service. The domain stays registered in the project and can be linked again later.
 
 ```bash
-$ curl -X DELETE https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/link \
+curl -X DELETE https://api.valar.dev/v2/projects/myproject/domains/mydomain.com/link \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"service": "web"}'
@@ -122,10 +142,10 @@ $ curl -X DELETE https://api.valar.dev/v2/projects/myproject/domains/mydomain.co
 
 `DELETE /v2/projects/{project}/domains/{domain}`
 
-Permanently removes a domain from the project. If the domain is linked to a service, you must unlink it first.
+Permanently removes a domain from the project. Unlink the domain from any service first.
 
 ```bash
-$ curl -X DELETE https://api.valar.dev/v2/projects/myproject/domains/mydomain.com \
+curl -X DELETE https://api.valar.dev/v2/projects/myproject/domains/mydomain.com \
   -H "Authorization: Bearer $TOKEN"
 ```
 

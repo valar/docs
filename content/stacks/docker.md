@@ -1,5 +1,15 @@
-# Docker
+# docker
 
-> Aliases are `docker`, `dockerfile`, `kaniko`.
+Build your service from a `Dockerfile` in the top-level directory, matching a local Docker build.
 
-Run builds just like on your local machine. Make sure to put a Dockerfile in the top level directory and `EXPOSE` the correct port and you should be good to go.
+Put your `Dockerfile` in the top-level directory and include an `EXPOSE` instruction for the port your application listens on. Accepted constructor aliases are `docker`, `dockerfile`, and `kaniko`.
+
+```yaml
+project: myproject
+service: helloworld
+build:
+  constructor: docker
+```
+
+> [!IMPORTANT]
+> Services cannot listen on privileged ports below 1024. Make sure your application listens on and exposes port 1024 or higher.

@@ -1,7 +1,8 @@
-# Setting up the project
+# Creating a new service
 
-To get started with a simple service, we recommend starting with a simple Go web application. This is also our primary support target
-besides static pages. A simple compatible Go web app would be
+Every Valar service handles HTTP traffic from a directory of source code. Create a Go service named `helloworld` in a new directory to deploy your first application.
+
+Save this HTTP server as `main.go`:
 
 ```go
 package main
@@ -22,16 +23,52 @@ func main() {
 }
 ```
 
-> **Important**: We do not allow software to run on privileged ports, meaning everything below 1024 is restricted by our system.
+> [!IMPORTANT]
+> Valar blocks privileged ports below 1024. Configure your service to listen on port 1024 or higher, such as `:8080`.
 
-Create a file called `main.go` and paste the contents into it. If you happen to have Go installed, you may test it using `go run main.go` and check out the output of `curl http://localhost:8080/hello-world`.
-
-## Configuring our service
-
-To tell Valar about our little Go web app, we have to run an initialization command.
+If Go is installed locally, start the server and send a test request from a second terminal:
 
 ```bash
-$ valar init --type go helloworld
+go run main.go
 ```
 
-> **Important**: While nicknames may contain dashes, services are not allowed.
+```bash
+curl http://localhost:8080/hello-world
+```
+
+```text
+Hello, you've requested: /hello-world
+```
+
+## Configuring the service
+
+Initialize the directory for Valar using the [golang](stacks/golang.md) stack:
+
+```bash
+valar init --type go helloworld
+```
+
+Pass a different value to `--type` for other runtimes listed in [Stacks](stacks/index.md).
+
+> [!IMPORTANT]
+> Service names cannot contain dashes (`-`).
+
+## The .valar.yml file
+
+Running `valar init` creates a `.valar.yml` file in your repository root. It defines the project, service name, build settings, and deployment options:
+
+```yaml
+project: myproject
+service: helloworld
+build:
+  constructor: golang
+  ignore:
+    - .valar.yml
+    - .git
+  environment: []
+deployment:
+  skip: false
+  environment: []
+```
+
+Use `build.ignore` to exclude files such as `.git` from the uploaded source archive, and set `deployment.skip` to `true` to build without deploying. See [Stacks](stacks/index.md) for stack options and `.valar.yml` fields.

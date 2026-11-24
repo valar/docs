@@ -1,3 +1,12 @@
 # python
 
-Simple python constructor that installs all your dependencies in your `requirements.txt` file. If you need something more complicated, using the `docker` constructor is recommended.
+Installs dependencies from `requirements.txt` and builds a Python service.
+
+```yaml
+project: myproject
+service: helloworld
+build:
+  constructor: python
+```
+
+Use the [docker](stacks/docker.md) stack if you need a custom Python setup or extra build steps.

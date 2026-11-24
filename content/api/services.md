@@ -1,15 +1,22 @@
 # Services
 
-Services are the deployable units within a project. Each service has a name, a current version, and one or more domains it is reachable on.
+Services are HTTP applications inside a project, each with a name, a current version, and one or more domains. For CLI log commands, see [Inspecting the logs](getting-started/inspection.md).
+
+## Endpoints
+
+| Method | Path | Action |
+|---|---|---|
+| `GET` | `/v2/projects/{project}/services/{service}` | [List services](#list-services) |
+| `GET` | `/v2/projects/{project}/services/{service}/logs` | [Get service logs](#get-service-logs) |
 
 ## List services
 
 `GET /v2/projects/{project}/services/{service}`
 
-Lists services whose name matches a given prefix. Pass an empty `service` segment to list all services in the project.
+Lists services whose names match a prefix. End the path with a trailing slash (an empty `{service}` segment) to list every service in the project:
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/ \
+curl https://api.valar.dev/v2/projects/myproject/services/ \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -26,10 +33,10 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/ \
 ]
 ```
 
-To filter by prefix, include the beginning of the service name:
+Append a prefix after the slash to filter by service name:
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web \
+curl https://api.valar.dev/v2/projects/myproject/services/web \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -37,20 +44,25 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web \
 
 `GET /v2/projects/{project}/services/{service}/logs`
 
-Retrieves runtime logs for a deployed service. The response is plain text, not JSON.
+Returns runtime logs for a deployed service.
+
+| Parameter | Description |
+|---|---|
+| `follow` | Set to `true` to stream logs in real time until you close the connection. |
+| `seek` | Position to start reading from: `start` or `end`. |
+| `skip` | Number of lines to skip. |
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/logs \
+curl https://api.valar.dev/v2/projects/myproject/services/web/logs \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-Set `follow` to `true` to stream logs in real time (the connection stays open until you close it). Use `seek` to start reading from the `start` or `end` of the log, and `skip` to skip a number of lines.
+Stream only new log lines:
 
 ```bash
-$ curl "https://api.valar.dev/v2/projects/myproject/services/web/logs?follow=true&seek=end" \
+curl "https://api.valar.dev/v2/projects/myproject/services/web/logs?follow=true&seek=end" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-> **Important**: The response content type is `text/plain`, not JSON. Each line is a log entry.
-
-See also: [Inspecting the logs](getting-started/inspection.md)
+> [!IMPORTANT]
+> The response content type is `text/plain`, not JSON. Each line is one log entry.

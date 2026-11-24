@@ -1,15 +1,28 @@
 # Permissions
 
-The permission system controls access to Valar resources using namespace-based ACLs. Permissions are organized by namespace (`service`, `kv`) and evaluated hierarchically — a permission on `myproject` also applies to `myproject/myservice`. See [Permission management](advanced-topics/managing-permissions.md) for a full explanation of the evaluation model.
+Valar controls access with path-based permission rules organized by namespace: a rule on `myproject` also applies to `myproject/web`. See [Permission management](advanced-topics/managing-permissions.md) for the evaluation rules and CLI commands.
+
+## Endpoints
+
+| Method | Path | Action |
+|---|---|---|
+| `GET` | `/v2/projects/{project}/permissions` | [List permissions](#list-permissions) |
+| `POST` | `/v2/projects/{project}/permissions` | [Update a permission](#update-a-permission) |
+| `POST` | `/v2/projects/{project}/permissions?mode=check` | [Check a permission](#check-a-permission) |
 
 ## List permissions
 
 `GET /v2/projects/{project}/permissions?namespace={namespace}&prefix={prefix}`
 
-Returns all permissions matching the given namespace and prefix. Both query parameters are required.
+Returns all permission rules matching a namespace and path prefix. Both query parameters are required.
+
+| Parameter | Description |
+|---|---|
+| `namespace` | Required. One of `legacy`, `service`, or `kv`. |
+| `prefix` | Required. Resource path prefix, such as `myproject` for a project or `myproject/web` for one service. |
 
 ```bash
-$ curl "https://api.valar.dev/v2/projects/myproject/permissions?namespace=service&prefix=myproject" \
+curl "https://api.valar.dev/v2/projects/myproject/permissions?namespace=service&prefix=myproject" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -30,22 +43,28 @@ $ curl "https://api.valar.dev/v2/projects/myproject/permissions?namespace=servic
 ]
 ```
 
-The `namespace` must be one of `legacy`, `service`, or `kv`. The `prefix` filters by resource path — use `myproject` to see all permissions in a project, or `myproject/myservice` to narrow down to a specific service.
-
-> **Important**: You need `manage` permission on the path to list its permissions.
+> [!IMPORTANT]
+> You need `manage` permission on the path to list its permissions.
 
 ## Update a permission
 
 `POST /v2/projects/{project}/permissions`
 
-Sets a permission rule for a specific path, user, and action. The `state` field controls the outcome: `allow` grants access, `forbid` denies it, and `unset` removes any explicit rule (falling back to the inherited default).
+Sets a permission rule for a path, user, and action.
+
+| Field | Description |
+|---|---|
+| `path` | Target resource with `namespace` (`legacy`, `service`, or `kv`) and `items` path segments. |
+| `user` | Subject with `type` (`human` or `service`) and `identifier` segments. |
+| `action` | One of `read`, `write`, `invoke`, or `manage`. |
+| `state` | `allow` grants access, `forbid` denies it, and `unset` removes an explicit rule so inherited rules apply (the CLI uses `clear` for `unset`). |
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/permissions \
+curl -X POST https://api.valar.dev/v2/projects/myproject/permissions \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "path": {"namespace": "service", "items": ["myproject", "myservice"]},
+    "path": {"namespace": "service", "items": ["myproject", "web"]},
     "user": {"type": "human", "identifier": ["anonymous"]},
     "action": "invoke",
     "state": "forbid"
@@ -58,22 +77,20 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/permissions \
 }
 ```
 
-The `modified` field indicates whether the permission was actually changed. If the rule already matched the requested state, `modified` is `false`.
-
-Actions are: `read`, `write`, `invoke`, and `manage`. User types are `human` and `service`. See [Permission management](advanced-topics/managing-permissions.md) for details on user matching (e.g. `anonymous`, `authenticated`, exact user).
+The `modified` boolean reports whether the rule changed. If the rule already had the requested state, `modified` is `false`. See [Permission management](advanced-topics/managing-permissions.md) for user matching (`anonymous`, `authenticated`, and exact usernames).
 
 ## Check a permission
 
 `POST /v2/projects/{project}/permissions?mode=check`
 
-Tests whether a specific user would be allowed to perform an action, without changing anything. Useful for debugging permission configurations.
+Checks whether a user is allowed an action without changing any rules.
 
 ```bash
-$ curl -X POST "https://api.valar.dev/v2/projects/myproject/permissions?mode=check" \
+curl -X POST "https://api.valar.dev/v2/projects/myproject/permissions?mode=check" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "path": {"namespace": "service", "items": ["myproject", "myservice"]},
+    "path": {"namespace": "service", "items": ["myproject", "web"]},
     "user": {"type": "human", "identifier": ["anonymous"]},
     "action": "invoke"
   }'

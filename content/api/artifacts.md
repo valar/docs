@@ -1,15 +1,15 @@
 # Artifacts
 
-Before submitting a build, you need to upload your source code as a build artifact. The artifact upload returns a key that you pass to the [build submission endpoint](api/builds.md).
+Upload your source code as an artifact first. The endpoint returns an artifact key to pass when you [submit a build](api/builds.md).
 
 ## Upload a build artifact
 
 `POST /v2/projects/{project}/services/{service}/artifacts`
 
-Uploads a binary artifact (typically a tarball of your source code) and returns an artifact key. The CLI handles this automatically when you run `valar builds push`, but you can also upload artifacts directly.
+Uploads a binary artifact (usually a tarball of your source code) and returns an artifact key. The CLI runs this step automatically during `valar build push`, or you can upload artifacts directly.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/artifacts \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/artifacts \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/octet-stream" \
   --data-binary @source.tar.gz
@@ -21,6 +21,7 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/artifact
 }
 ```
 
-The returned `artifact` key is used as input when [submitting a build](api/builds.md).
+Pass the returned `artifact` key to the [build submission endpoint](api/builds.md).
 
-> **Important**: The maximum artifact size is 128 MB. Requests exceeding this limit will be rejected.
+> [!IMPORTANT]
+> The maximum artifact size is 128 MB. Larger requests are rejected.

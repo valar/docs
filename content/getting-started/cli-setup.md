@@ -1,37 +1,38 @@
-# Getting started
+# Setting up the client
 
-At this point, we assume you have got access to Valar. If you don't, you won't be able to continue from here. As Valar is invitation-only right now, access can only be obtained by being invited by another user.
+Valar builds and runs serverless containers from source. Access is currently invite-only through an existing user. Returning users can go directly to [Stacks](stacks/index.md) or the [API reference](api/index.md).
 
 ## Obtaining an API token
 
-At some point you will receive credentials for your Valar account. To use the CLI, we require an API token.
-Just head to [the cloud console](https://console.valar.dev), sign in and create a new one under the 'API Tokens' section.
-Please keep this token secure as it
-identifies you uniquely. Any person or program that has access to your token identifies as yourself.
+The CLI authenticates with an API token. Sign in to the [Valar console](https://console.valar.dev) and create one under **API Tokens**.
 
+> [!WARNING]
+> Keep your API token private. Anyone who has it has full access to your account.
+
+For CI, create a project-scoped token with `valar token create` after setting up the CLI. See [Deploying from GitHub Actions](advanced-topics/github-actions.md) for an example.
 
 ## Installing the CLI
 
-To get started with deploying your first service, you have to install the Valar command line tool. The simplest way to get started is to use `homebrew`.
+Install the Valar CLI with Homebrew:
 
 ```bash
-$ brew tap valar/tap
-$ brew install valar
+brew tap valar/tap
+brew install valar
 ```
-
-Congratulations, you've installed Valar. Now we just need to configure your CLI to use the API token obtained beforehand.
 
 ## Configuring access
 
-The Valar CLI separates global configuration into **context** and **endpoints**. You can easily switch between contexts, for example when you manage multiple projects.
+The CLI stores global settings in **endpoints** and **contexts**. An endpoint holds an API URL and token; a context pairs an endpoint with a default project so you can switch between projects.
+
+Register the Valar endpoint with your token, add a context for your default project, and activate it:
 
 ```bash
-# Create a new endpoint
-valar config endpoint set valar --url https://api.valar.dev/v2 --token [YOUR API TOKEN HERE]
-# Create a new context
-valar config context set [YOUR USERNAME] --endpoint valar --project [YOUR USERNAME]
-# Use the newly created context
-valar config context use [YOUR USERNAME]
-```
+# Register the API endpoint
+valar config endpoint set valar --url https://api.valar.dev/v2 --token <api-token>
 
-If all goes well, you will be now able to deploy your first service.
+# Create a context for your default project
+valar config context set <username> --endpoint valar --project <username>
+
+# Activate the context
+valar config context use <username>
+```

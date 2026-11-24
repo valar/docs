@@ -48,4 +48,21 @@ describe("content", () => {
   it("uses GitHub alerts instead of docsify's ?> and !> callouts", () => {
     expect([...sources].filter(([, source]) => /^\s*[?!]> /m.test(source)).map(([file]) => file)).toEqual([]);
   });
+
+  it("uses GitHub alerts instead of legacy bold Important blockquotes", () => {
+    expect([...sources].filter(([, source]) => /^\s*>\s*\*\*Important\*\*:/m.test(source)).map(([file]) => file)).toEqual([]);
+  });
+
+  it("lists every page in the sidebar", () => {
+    const entries = new Set(site.sidebar.flatMap((group) => [...(group.file ? [group.file] : []), ...group.items.map((item) => item.file)]));
+    expect(site.files.filter((file) => !entries.has(file))).toEqual([]);
+  });
+
+  it("gives every page a summary paragraph for meta descriptions", () => {
+    expect([...docs].filter(([, doc]) => !doc.description).map(([file]) => file)).toEqual([]);
+  });
+
+  it("contains no em-dashes, en-dashes, or curly quotes", () => {
+    expect([...sources].filter(([, source]) => /[—–“”‘’…]/.test(source)).map(([file]) => file)).toEqual([]);
+  });
 });
