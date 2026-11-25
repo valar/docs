@@ -1,11 +1,16 @@
-# Permissions
+# Permission management
 
-The permission system unifies permission management for all Valar components, separated by a concept of namespaces. As of today, there are two of them: `service`, which manages service access and `kv`, which manages access to Valar's integrated key-value store. In these namespaces, users can assign permissions as they see fit. To manage permissions inside a specific path, you'll need to have `manage` permissions within that path.
+Valar organizes access control by namespace: `service` for services and `kv` for the integrated key-value store (the HTTP API also accepts `legacy`). You need `manage` permission on a path to inspect or change its rules.
 
-Let's walk through how to manage permissions for your project. To inspect the permissions in the scope of your project, use `valar auth list`.
+## Listing permissions
+
+List the permissions in your current project with `valar auth list`:
 
 ```bash
-$ valar auth list
+valar auth list
+```
+
+```text
 PATH              USER             ACTION STATE
 service:myproject human:anonymous  invoke allowed
 service:myproject human:myuser     invoke allowed
@@ -14,33 +19,49 @@ service:myproject human:myuser     read   allowed
 service:myproject human:myuser     write  allowed
 ```
 
-The command also takes an optional path parameter (which defaults to `service:myproject`). However, if you want to pre-filter based on a prefix, you could use `service:myproject/myservice`.
+By default, the command lists rules under `service:myproject`. Pass a path prefix such as `service:myproject/helloworld` to filter the output.
 
-To change these permissions, you can opt to either `allow`, `forbid` or `clear` the permissions for a specific path, user and action. While `allow` and `forbid` edit or insert existing permission entries, `clear` removes any specific entry that matches the specified criteria.
+## Changing permissions
+
+Use `allow`, `forbid`, or `clear` to update permissions for a path, user, and action:
+
+- `allow` and `forbid` add a new rule or update an existing one.
+- `clear` removes an exact matching rule so access falls back to inherited rules.
+
+For example, to forbid anonymous users from invoking `helloworld`:
 
 ```bash
-# Forbid anonymous user access to myservice
-$ valar auth forbid service:myproject/myservice human:anonymous invoke
+valar auth forbid service:myproject/helloworld human:anonymous invoke
+```
+
+```text
 modified
 ```
 
-To check if a specific user can perform an action, you can use `valar auth check`.
+## Checking permissions
+
+Check whether a user is allowed an action on a path with `valar auth check`:
 
 ```bash
-$ valar auth check service:myproject/myservice human:anonymous invoke
+valar auth check service:myproject/helloworld human:anonymous invoke
+```
+
+```text
 forbidden
 ```
 
 ## Evaluation
 
-To understand how permissions are evaluted, you have to view them on a prefix-tree basis. Both paths and users act as prefix matchers, for example any path `myproject` matches `myproject/myservice` and `myproject` but not `otherproject`.
+Permissions use a prefix tree. Both paths and `service` users match by prefix: `myproject` matches `myproject` and `myproject/helloworld`, but not `otherproject`.
 
-Users can be matched against both `human` and `service` users. For example, if `myservice` would want to access the KV store, it wouth authenticate as `myproject/myservice`. For `service` users, the hierarchical matching applies in the exact same way as described above.
+Rules can match `human` or `service` users. When `helloworld` accesses the key-value store, it authenticates as `service:myproject/helloworld`, and `service` users follow the same prefix-matching rules as paths.
 
-On the other hand, `human` users are not hierarchical in the same way as `service` users, but they use simple subset matching.
+`human` users are not hierarchical; they use subset matching:
 
 - `human:anonymous` matches any `human` user.
-- `human:authenticated` matches all except `human:anonymous`.
-- `human:myaccount` matches an exact user account with the name `myaccount`.
+- `human:authenticated` matches all `human` users except `human:anonymous`.
+- `human:myuser` matches only the exact account `myuser`.
 
-Exact user matches take priority over `authenticated` matches, while `authenticated` takes priority over `anonymous`.
+Exact user matches (`human:myuser`) take priority over `human:authenticated`, and `human:authenticated` takes priority over `human:anonymous`.
+
+To manage permissions over HTTP, see [Permissions](api/permissions.md) (the API uses `unset` where the CLI uses `clear`).

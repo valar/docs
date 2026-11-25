@@ -1,48 +1,50 @@
 # Scheduled invocations
 
-Sometimes, you will need to trigger something in your service automatically, without any external input. Valar provides this functionality through a `cron`-like interface.
+Use `valar cron` to call a service on a cron schedule, with no external request needed.
 
 ## Setting a schedule
 
-To add a schedule for the `helloworld` service created in the *Getting Started* codelab, you will use the `valar cron set` command.
+Add schedules to the `helloworld` service from [Creating a new service](getting-started/service-setup.md) with `valar cron set`:
 
 ```bash
-# To create a schedule that triggers every 10 minutes.
-$ valar cron set every10 "*/10 * * * *"
-# To create a schedule that triggers once an hour and requests /some-path.
-$ valar cron set everyHour "0 * * * *" --path /some-path
-# To create a schedule that triggers once a day and sends a payload.
-$ valar cron set everyDay "0 0 * * *" --payload do-something
+# Trigger every 10 minutes
+valar cron set every10 "*/10 * * * *"
+
+# Trigger once an hour at /some-path
+valar cron set everyHour "0 * * * *" --path /some-path
+
+# Trigger once a day with a payload
+valar cron set everyDay "0 0 * * *" --payload do-something
 ```
 
-The schedule above will trigger an invocation of the `helloworld` service by sending a `POST /` HTTP request every 10 minutes.
-
-Timespecs are evaluated in UTC: `0 12 * * *` fires at 12:00 UTC. A new schedule first fires at its next matching time, not when you create it.
+Each run sends an HTTP `POST` request to the path (default `/`) with any `--payload` you set. Timespecs use UTC, so `0 12 * * *` runs at 12:00 UTC. A new schedule first fires at its next matching time, not when you create it.
 
 ### Adjusting the timespec
 
-In case you're not satisfied with your invocation schedule, you may adjust the timespec using a variant of the set command. If a schedule has already been specified, all arguments except for the schedule name are considered *optional*.
+When updating an existing schedule with `valar cron set`, only the schedule name is required. Omitted options keep their current values.
 
 ```bash
-# Force the schedule to only trigger once a day at noon.
-$ valar cron set everyDay "0 12 * * *"
+# Change everyDay to run once a day at 12:00 UTC
+valar cron set everyDay "0 12 * * *"
 ```
 
 ### Enabling & disabling the schedule
 
-The set command can also be used to disable a schedule. This is useful for temporarily enabling or disabling a schedule, eliminating the need to re-specify timespec, path and payload when re-enabling it.
+Pass `--disabled` to stop a schedule from running without losing its timespec, path, or payload. When you re-enable the schedule, you do not have to pass those options again.
 
 ```bash
-# Disable the schedule. This will prevent it from triggering.
-$ valar cron set --disabled everyDay
+valar cron set --disabled everyDay
 ```
 
 ### Viewing all schedules
 
-To get a quick overview of the set of enabled & disabled schedules for a service, you can use the `list` subcommand.
+List all enabled and disabled schedules for the service with `valar cron list`:
 
 ```bash
-$ valar cron list
+valar cron list
+```
+
+```text
 NAME      TIMESPEC       PATH       STATUS
 every10   */10 *  * * *  /          enabled
 everyHour 0    *  * * *  /some-path enabled
@@ -51,10 +53,13 @@ everyDay  0    12 * * *  /          disabled
 
 ## Inspecting a schedule
 
-The `cron` subsystem also supports inspecting a schedule for a more detailed view including the result of the last triggered run.
+View a schedule's full configuration and the result of its last run with `valar cron inspect`:
 
 ```bash
-$ valar cron inspect everyDay
+valar cron inspect everyDay
+```
+
+```text
 Name:      everyDay
 Timespec:  0 12 * * *
 Path:      /
@@ -68,9 +73,10 @@ Last Run:
 
 ## Deleting a schedule
 
-When a schedule is permanently not needed anymore, it can be removed and fully dropped from the `cron` subsystem. 
-When executing this command, all details related to this schedule, including its invocation history, are pruned.
+Delete a schedule permanently with `valar cron delete`. This removes the schedule and its invocation history.
 
 ```bash
-$ valar cron delete everyDay
+valar cron delete everyDay
 ```
+
+To manage schedules over HTTP or trigger a schedule manually, see [Schedules](api/schedules.md).

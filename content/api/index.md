@@ -1,23 +1,36 @@
-# API Reference
+# API reference
 
-The Valar API is a REST API that lets you manage projects, services, builds, deployments, domains, and more. All endpoints live under a single base URL.
+The Valar REST API manages projects, services, builds, deployments, domains, permissions, and schedules.
 
 **Base URL:** `https://api.valar.dev/v2`
 
+## Resources
+
+| Resource | Path | Summary |
+|---|---|---|
+| [Services](api/services.md) | `/v2/projects/{project}/services/{service}` | List services and read runtime logs. |
+| [Artifacts](api/artifacts.md) | `/v2/projects/{project}/services/{service}/artifacts` | Upload source tarballs for builds. |
+| [Builds](api/builds.md) | `/v2/projects/{project}/services/{service}/builds` | Submit, inspect, abort, and stream logs for builds. |
+| [Deployments](api/deployments.md) | `/v2/projects/{project}/services/{service}/deploys` | List, create, and roll back deployments. |
+| [Environment](api/environment.md) | `/v2/projects/{project}/environment/encrypt` | Encrypt secret environment variables. |
+| [Domains](api/domains.md) | `/v2/projects/{project}/domains` | Register, verify, link, and remove custom domains. |
+| [Permissions](api/permissions.md) | `/v2/projects/{project}/permissions` | List, update, and check namespace ACLs. |
+| [Schedules](api/schedules.md) | `/v2/projects/{project}/services/{service}/schedules` | Manage and trigger cron schedules. |
+
 ## Authentication
 
-All requests (except version check) require a Bearer token in the `Authorization` header.
+Every endpoint except the version check requires a Bearer token in the `Authorization` header:
 
 ```bash
-$ curl https://api.valar.dev/v2/users/info \
+curl https://api.valar.dev/v2/users/info \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-You can create a token in [the cloud console](https://console.valar.dev) under 'API Tokens'. See [Setting up the client](getting-started/cli-setup.md) for details.
+Create a token in the [Valar console](https://console.valar.dev) under **API Tokens**. See [Setting up the client](getting-started/cli-setup.md) for setup details.
 
 ## Errors
 
-Error responses return a JSON object with a single `error` field. For 4xx errors, the message describes the problem (e.g. `"service not found"`). For 5xx errors, the message is always `"internal error"`.
+Failed requests return a JSON object with a single `error` field. For 4xx responses, the message describes the problem (for example, `"service not found"`). For 5xx responses, the message is always `"internal error"`.
 
 ```json
 {
@@ -29,10 +42,10 @@ Error responses return a JSON object with a single `error` field. For 4xx errors
 
 `GET /v2/`
 
-Returns the current API version. This endpoint does not require authentication.
+Returns the current API version. No authentication is required.
 
 ```bash
-$ curl https://api.valar.dev/v2/
+curl https://api.valar.dev/v2/
 ```
 
 ```json
@@ -48,7 +61,7 @@ $ curl https://api.valar.dev/v2/
 Returns your username and the projects you own.
 
 ```bash
-$ curl https://api.valar.dev/v2/users/info \
+curl https://api.valar.dev/v2/users/info \
   -H "Authorization: Bearer $TOKEN"
 ```
 

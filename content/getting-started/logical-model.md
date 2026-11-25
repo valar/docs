@@ -1,23 +1,28 @@
 # Logical model
 
-Valar has a very simple logical model.
+Valar organizes resources into a five-level hierarchy: users, projects, services, builds, and deployments. Projects own services, and each service runs versions created by builds and deployments.
 
-There are **users**, **projects**, **services**, **builds** and **deployments**.
+## Resources
 
-A **user** may be the creator of one or more **projects**.
+| Resource | Role |
+|---|---|
+| **User** | An account that creates projects and holds permissions on resources. |
+| **Project** | A group of one or more services, and the root level for authorization. |
+| **Service** | An HTTP application inside a project, normally serving its latest deployed version. |
+| **Build** | A runnable image produced from source code pushed to the API server. |
+| **Deployment** | A numbered version of a service created from a completed build. |
 
-A **user** may be authorized to
-- read (read builds, deployments)
-- write (submit new builds, deployments)
-- invoke (reach service via HTTP)
-- manage (transfer ownership, assign permissions)
+By default, pushing source code starts a build and deploys the new version. You can skip automatic deployment in `.valar.yml` or through the [Builds API](api/builds.md).
 
-**Projects** are the level on which authorization happens.
-A project may contain one or more **services**.
+## Permissions
 
-A **service** has (almost always) a latest version.
-A version of a service is defined by a **deployment**.
+Authorization works on paths starting at the project level across namespaces (`service` for services and `kv` for the key-value store). Each rule grants or forbids one of four actions:
 
-**Builds** are created by pushing new code to the API server.
-Pushing new code is self-deploying action by default and
-creates a new **deployment** after the **build** has finished.
+| Action | Grants |
+|---|---|
+| `read` | Viewing builds and deployments. |
+| `write` | Submitting new builds and deployments. |
+| `invoke` | Calling a service over HTTP. |
+| `manage` | Transferring ownership and assigning permissions. |
+
+See [Permission management](advanced-topics/managing-permissions.md) for evaluation rules and CLI commands.

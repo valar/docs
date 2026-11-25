@@ -1,9 +1,9 @@
 * Getting started
     * [Setting up the client](getting-started/cli-setup.md)
-    * [Logical model](getting-started/logical-model.md)
     * [Creating a new service](getting-started/service-setup.md)
     * [Publishing the service](getting-started/publish.md)
     * [Inspecting the logs](getting-started/inspection.md)
+    * [Logical model](getting-started/logical-model.md)
 * Advanced concepts
     * [Custom domains](advanced-topics/custom-domains.md)
     * [Permission management](advanced-topics/managing-permissions.md)
@@ -18,8 +18,8 @@
     * [static](stacks/static.md)
 * [API reference](api/index.md)
     * [Services](api/services.md)
-    * [Builds](api/builds.md)
     * [Artifacts](api/artifacts.md)
+    * [Builds](api/builds.md)
     * [Deployments](api/deployments.md)
     * [Environment](api/environment.md)
     * [Domains](api/domains.md)

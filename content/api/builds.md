@@ -1,6 +1,17 @@
 # Builds
 
-A build takes a source [artifact](api/artifacts.md) and turns it into a runnable image using a constructor (the build system for your chosen [stack](stacks/index.md)). Builds progress through statuses: `pending`, `running`, `done`, `failed`, or `expired`.
+A build takes a source [artifact](api/artifacts.md) and turns it into a runnable image using a constructor from your chosen [stack](stacks/index.md). Builds move through `pending`, `running`, `done`, `failed`, and `expired` statuses. See [Publishing the service](getting-started/publish.md) for the CLI commands.
+
+## Endpoints
+
+| Method | Path | Action |
+|---|---|---|
+| `GET` | `/v2/projects/{project}/services/{service}/builds` | [List builds](#list-builds) |
+| `GET` | `/v2/projects/{project}/services/{service}/builds/{build}` | [List builds by ID prefix](#list-builds) |
+| `POST` | `/v2/projects/{project}/services/{service}/builds` | [Submit a build](#submit-a-build) |
+| `GET` | `/v2/projects/{project}/services/{service}/builds/{build}/inspect` | [Inspect a build](#inspect-a-build) |
+| `GET` | `/v2/projects/{project}/services/{service}/builds/{build}/logs` | [Get build logs](#get-build-logs) |
+| `POST` | `/v2/projects/{project}/services/{service}/builds/{build}/abort` | [Abort a build](#abort-a-build) |
 
 ## List builds
 
@@ -9,7 +20,7 @@ A build takes a source [artifact](api/artifacts.md) and turns it into a runnable
 Returns all builds for a service, newest first.
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/builds \
+curl https://api.valar.dev/v2/projects/myproject/services/web/builds \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -24,12 +35,12 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web/builds \
 ]
 ```
 
-You can also filter by ID prefix by appending it to the path:
+Append an ID prefix to filter the results:
 
 `GET /v2/projects/{project}/services/{service}/builds/{build}`
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2 \
+curl https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2 \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -37,10 +48,18 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2 \
 
 `POST /v2/projects/{project}/services/{service}/builds`
 
-Starts a new build from a previously uploaded [artifact](api/artifacts.md). You must specify the artifact key and the build configuration. By default, a successful build is deployed automatically.
+Starts a new build from an uploaded [artifact](api/artifacts.md). By default, a successful build deploys automatically.
+
+| Field | Description |
+|---|---|
+| `artifact` | Required. Artifact key returned by [Upload a build artifact](api/artifacts.md). |
+| `build.constructor` | Required. Constructor for your [stack](stacks/index.md) (for example, `golang`, `python`, or `docker`). |
+| `build.environment` | Optional. Environment variables (`key`, `value`, and optionally `secret: true`) available only during the build. |
+| `deployment.skip` | Optional. Set to `true` to build without deploying. |
+| `deployment.environment` | Optional. Environment variables set on the deployed service. Encrypt secrets with [Environment](api/environment.md). |
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -63,12 +82,10 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds \
 }
 ```
 
-The `build.constructor` field selects which stack builds your code (e.g. `golang`, `python`, `docker`). See [Stacks](stacks/index.md) for the full list.
-
 To build without deploying, set `deployment.skip` to `true`:
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -78,16 +95,14 @@ $ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds \
   }'
 ```
 
-You can also pass `deployment.environment` to set environment variables for the deployed service, and `build.environment` to set variables available only during the build.
-
 ## Inspect a build
 
 `GET /v2/projects/{project}/services/{service}/builds/{build}/inspect`
 
-Returns detailed information about a specific build, including the constructor used, the owner who submitted it, and any flags.
+Returns details for one build, including its constructor, owner, and flags.
 
 ```bash
-$ curl https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/inspect \
+curl https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/inspect \
   -H "Authorization: Bearer $TOKEN"
 ```
 
@@ -107,23 +122,24 @@ $ curl https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/
 
 `GET /v2/projects/{project}/services/{service}/builds/{build}/logs`
 
-Returns the build output as plain text. Set `follow` to `true` to stream logs in real time until the build finishes.
+Returns build output as plain text. Pass `follow=true` in the query string to stream logs until the build finishes.
 
 ```bash
-$ curl "https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/logs?follow=true" \
+curl "https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/logs?follow=true" \
   -H "Authorization: Bearer $TOKEN"
 ```
 
-> **Important**: The response is `text/plain`, not JSON. A `204` response means the build has expired and logs are no longer available.
+> [!IMPORTANT]
+> The response content type is `text/plain`, not JSON. A `204` response means the build has expired and its logs are no longer available.
 
 ## Abort a build
 
 `POST /v2/projects/{project}/services/{service}/builds/{build}/abort`
 
-Cancels a running build. Only builds in `pending` or `running` status can be aborted.
+Cancels a `pending` or `running` build.
 
 ```bash
-$ curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/abort \
+curl -X POST https://api.valar.dev/v2/projects/myproject/services/web/builds/a1b2c3d4/abort \
   -H "Authorization: Bearer $TOKEN"
 ```
 

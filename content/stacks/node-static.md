@@ -1,13 +1,30 @@
 # node-static
 
-The `node-static` constructor performs a typical static website build using `npm` or `yarn`.
-You may choose between `yarn` or `npm` by setting the `PACKAGE_MANAGER` environment variable respectively.
+Builds a static website with `npm` or `yarn` and serves the output with nginx.
 
-It executes two consecutive instructions, namely
+The build runs the install command, then the build command, and serves the output directory with nginx.
 
-- `npm install` (configurable via `INSTALL_CMD`)
-- `npm run build` (configurable via `BUILD_CMD`)
+```yaml
+project: myproject
+service: helloworld
+build:
+  constructor: node-static
+  ignore:
+    - .valar.yml
+    - .git
+    - node_modules
+    - dist
+```
 
-The constructor assumes that the resulting static files are all stored in the `dist/` (configurable via `DIST_FOLDER`) folder.
+## Build environment variables
 
-The contents of the `DIST_FOLDER` are then served via nginx.
+Set these build environment variables to change the defaults:
+
+| Variable | Default | Description |
+|---|---|---|
+| `PACKAGE_MANAGER` | `npm` | Package manager to use (`npm` or `yarn`). |
+| `INSTALL_CMD` | `npm install` | Command that installs dependencies. |
+| `BUILD_CMD` | `npm run build` | Command that builds the static files. |
+| `DIST_FOLDER` | `dist/` | Directory containing the generated static files served by nginx. |
+
+To pass build environment variables over HTTP, see [Builds](api/builds.md).

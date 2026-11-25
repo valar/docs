@@ -1,3 +1,12 @@
 # node
 
-The node constructor runs any Node.js application. For more complicated setups, using the `docker` constructor is recommended.
+Builds and runs a Node.js application.
+
+```yaml
+project: myproject
+service: helloworld
+build:
+  constructor: node
+```
+
+For a custom Node.js setup, use the [docker](stacks/docker.md) stack instead.
